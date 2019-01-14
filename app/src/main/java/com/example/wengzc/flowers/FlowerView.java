@@ -1,23 +1,20 @@
 package com.example.wengzc.flowers;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
-import android.graphics.Xfermode;
-import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlowerView extends View {
 
-    private Flower flower;
+    private List<Flower> flowers;
 
     public FlowerView(Context context) {
         super(context);
@@ -34,15 +31,33 @@ public class FlowerView extends View {
         init();
     }
 
-    private void init() {
-        flower = new Flower.Builder(500, 500, 200)
-                .setPetalRender(PetalRenderFactory.getRender(PetalRender.Type.LOOP))
-                .build();
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getActionMasked()){
+            case MotionEvent.ACTION_UP:
+                handleClick(event);
+                break;
+        }
+        return true;
     }
 
+    private void handleClick (MotionEvent event){
+        float x = event.getX();
+        float y = event.getY();
+        Flower flower = FlowerFactory.makeFlower(x, y, this);
+        flowers.add(flower);
+        invalidate();
+    }
+
+    private void init() {
+        flowers = new ArrayList();
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        flower.render(canvas);
+        canvas.drawColor(Color.WHITE);
+        for (Flower flower : flowers){
+            flower.render(canvas);
+        }
     }
 }

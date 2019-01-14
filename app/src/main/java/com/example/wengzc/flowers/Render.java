@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 
 public interface Render {
 
-    static final int STROKE_WIDTH = 2;
+    int STROKE_WIDTH = 5;
 
     void render(Canvas canvas);
 }

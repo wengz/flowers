@@ -7,40 +7,75 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.util.Log;
 
 import static com.example.wengzc.flowers.EyesRender.Direction.LEFT;
 import static com.example.wengzc.flowers.EyesRender.Direction.RIGHT;
 
 public class EyesRenderFactory {
 
+    public static EyesRender getRener(EyesRender.Type type){
+        return getRener( type, null, null);
+    }
+
     public static EyesRender getRener(EyesRender.Type type, FlowerBaseInfo baseInfo){
+        return getRener( type, baseInfo, null);
+    }
+
+    public static EyesRender getRener(EyesRender.Type type, EyesRender.ConstructArgument constructArgument){
+        return getRener( type, null, constructArgument);
+    }
+
+    public static EyesRender getRener(EyesRender.Type type, FlowerBaseInfo baseInfo, EyesRender.ConstructArgument constructArgument){
         switch (type){
-            case DEFAULT:
-                return new DefaultEyesRender(baseInfo);
+            case COLOR:
+                return new ColorEyesRender(baseInfo, (ColorEyesRender.ConstructArgument) constructArgument);
         }
         return null;
     }
 
-    public static class DefaultEyesRender extends EyesRender {
+    public static class ColorEyesRender extends EyesRender {
+
+
+        public static class ConstructArgument extends EyesRender.ConstructArgument {
+            int leftEyeColor;
+            int rightEyeColor;
+
+            public ConstructArgument (int leftEyeColor, int rightEyeColor){
+                this.leftEyeColor = leftEyeColor;
+                this.rightEyeColor = rightEyeColor;
+            }
+        }
+
 
         private FlowerBaseInfo baseInfo;
         private Paint paint;
+        private int leftEyeColor;
+        private int rightEyeColor;
 
-        private DefaultEyesRender (FlowerBaseInfo baseInfo){
+        private ColorEyesRender(FlowerBaseInfo baseInfo, ConstructArgument constructArgument){
             this.baseInfo = baseInfo;
             paint = new Paint();
             paint.setColor(Color.BLACK);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(1);
             paint.setAntiAlias(true);
+
+            leftEyeColor = constructArgument.leftEyeColor;
+            rightEyeColor = constructArgument.rightEyeColor;
         }
 
-        private Bitmap createEyeContainer (int r){
+        private Bitmap createEyeContainer (int r, Direction direction){
             Bitmap bitDstMap = Bitmap.createBitmap(r+2, r*2+2, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitDstMap);
             canvas.translate(r/2, r);
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.BLACK);
+            if (direction == LEFT){
+                paint.setColor(leftEyeColor);
+            }else if (direction == RIGHT){
+                paint.setColor(rightEyeColor);
+            }
+
             paint.setStyle(Paint.Style.FILL_AND_STROKE);
             paint.setStrokeWidth(1);
             RectF rectF = new RectF(-(r/2), -r, r/2, r);
@@ -49,6 +84,9 @@ public class EyesRenderFactory {
         }
 
         private Bitmap createEyeInnerHoleBig (int r, Direction direction){
+            if (r <= 0 ){
+                r = 1;
+            }
             Bitmap bitDstMap = Bitmap.createBitmap(r, r*2, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitDstMap);
             canvas.translate(r/2, r);
@@ -67,6 +105,9 @@ public class EyesRenderFactory {
         }
 
         private Bitmap createEyeInnerHoleSmall (int r, Direction direction){
+            if (r <= 0){
+                r = 1;
+            }
             Bitmap bitDstMap = Bitmap.createBitmap(r, r * 2, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitDstMap);
             canvas.translate(r/2, r);
@@ -88,7 +129,7 @@ public class EyesRenderFactory {
             Bitmap bitDstMap = Bitmap.createBitmap(r+2, r*2+2, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitDstMap);
             //int saveCount = canvas.saveLayer(new RectF(0, 0, 102, 202), mPaint, Canvas.ALL_SAVE_FLAG);
-            Bitmap eyeContainer = createEyeContainer(r);
+            Bitmap eyeContainer = createEyeContainer(r, direction);
             canvas.drawBitmap(eyeContainer, 0, 0, paint);
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
             Bitmap eyeInnerSmall = createEyeInnerHoleSmall(r, direction);
@@ -123,6 +164,11 @@ public class EyesRenderFactory {
             Bitmap leftEye = createEye((int)eyeWidth, LEFT);
             canvas.drawBitmap(leftEye, (float)leftEyeLeft, (float)leftEyeTop, paint);
             canvas.restore();
+        }
+
+        @Override
+        public void setFlowerBaseInfo(FlowerBaseInfo flowerBaseInfo) {
+            this.baseInfo = flowerBaseInfo;
         }
 
         @Override

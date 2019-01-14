@@ -5,8 +5,13 @@ import android.graphics.Canvas;
 public abstract class MouthRender implements Render, FlowerBaseInfo{
 
     public enum Type {
-        DEFAULT
+        COLOR
     }
+
+    public static abstract class ConstructArgument {
+
+    }
+
 
     @Override
     public void render(Canvas canvas) {

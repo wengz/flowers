@@ -6,21 +6,43 @@ import android.graphics.Paint;
 
 public class FaceRenderFactory {
 
+    public static FaceRender getRender (FaceRender.Type type){
+        return getRender(type, null, null);
+    }
+
     public static FaceRender getRender (FaceRender.Type type, FlowerBaseInfo baseInfo){
+        return getRender(type, baseInfo, null);
+    }
+
+    public static FaceRender getRender (FaceRender.Type type, FaceRender.ConstructArgument constructArgument){
+        return getRender(type, null, constructArgument);
+    }
+
+    public static FaceRender getRender (FaceRender.Type type, FlowerBaseInfo baseInfo, FaceRender.ConstructArgument constructArgument){
         switch (type){
-            case DEFAULT:
-                return new DefaultFaceRender(baseInfo);
+            case COLOR:
+                return new ColorFaceRender(baseInfo, (ColorFaceRender.ConstructArgument) constructArgument);
         }
         return null;
     }
 
-    public static class DefaultFaceRender extends FaceRender {
+    public static class ColorFaceRender extends FaceRender {
+
+        public static class ConstructArgument extends FaceRender.ConstructArgument {
+
+            int color;
+
+            public ConstructArgument (int color){
+                this.color = color;
+            }
+
+        }
 
         private FlowerBaseInfo baseInfo;
         private Paint paint;
         private Paint fillPaint;
 
-        private DefaultFaceRender (FlowerBaseInfo baseInfo){
+        private ColorFaceRender(FlowerBaseInfo baseInfo, ConstructArgument constructArgument){
             this.baseInfo = baseInfo;
             paint = new Paint();
             paint.setColor(Color.BLACK);
@@ -29,7 +51,7 @@ public class FaceRenderFactory {
             paint.setAntiAlias(true);
 
             fillPaint = new Paint();
-            fillPaint.setColor(Color.YELLOW);
+            fillPaint.setColor(constructArgument.color);
             fillPaint.setStyle(Paint.Style.FILL);
             fillPaint.setStrokeWidth(1);
             fillPaint.setAntiAlias(true);
@@ -43,6 +65,11 @@ public class FaceRenderFactory {
 
             canvas.drawCircle(0, 0, (float)r, fillPaint);
             canvas.drawCircle(0, 0, (float)r, paint);
+        }
+
+        @Override
+        public void setFlowerBaseInfo(FlowerBaseInfo flowerBaseInfo) {
+            this.baseInfo = flowerBaseInfo;
         }
 
         @Override

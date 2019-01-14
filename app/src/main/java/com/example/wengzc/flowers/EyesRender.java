@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 public abstract class EyesRender implements Render, FlowerBaseInfo{
 
     public enum Type{
-        DEFAULT
+        COLOR
 
     }
 
@@ -14,6 +14,10 @@ public abstract class EyesRender implements Render, FlowerBaseInfo{
         LEFT,
 
         RIGHT;
+    }
+
+    public static abstract class ConstructArgument {
+
     }
 
     @Override

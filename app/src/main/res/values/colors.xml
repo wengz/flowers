@@ -3,4 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="flower_color_66E0F3">#FF66E0F3</color>
+    <color name="flower_color_FCFDFC">#FFFCFDFC</color>
+    <color name="flower_color_FF3322">#FFFF3322</color>
+    <color name="flower_color_D7DAE6">#FFD7DAE6</color>
+    <color name="flower_color_FFF038">#FFFFF038</color>
+    <color name="flower_color_DDED80">#FFDDED80</color>
+    <color name="flower_color_FF89B7">#FFFF89B7</color>
+    <color name="flower_color_6F4FB8">#FF6F4FB8</color>
+    <color name="flower_color_14150A">#FF14150A</color>
+
 </resources>

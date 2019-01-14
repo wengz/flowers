@@ -5,18 +5,19 @@ import android.graphics.Canvas;
 public abstract class PetalRender implements Render, FlowerBaseInfo{
 
     public enum Type {
-        DEFAULT,
-
-        LOOP,
+        COLOR_LOOP,
     }
+
+
+    public static abstract class ConstructArgument {
+
+
+    }
+
 
     @Override
     public void render(Canvas canvas) {
         renderPetals(canvas, getCenterX(), getCenterY(), getBaseR());
-    }
-
-    public void setFlowerBaseInfo (FlowerBaseInfo flowerBaseInfo){
-
     }
 
     /**
