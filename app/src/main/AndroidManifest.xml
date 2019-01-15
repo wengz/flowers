@@ -2,22 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.wengzc.flowers">
 
+    <uses-feature
+        android:name="android.software.live_wallpaper"
+        android:required="true">
+    </uses-feature>
+
     <application
+        android:name=".FlowersApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/flower_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <service
+            android:name=".FlowerWallpapaerService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_WALLPAPER">
+
+            <intent-filter android:priority="1">
+                <action android:name="android.service.wallpaper.WallpaperService" />
             </intent-filter>
-        </activity>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/wallpaper" />
+
+        </service>
+
     </application>
 
 </manifest>

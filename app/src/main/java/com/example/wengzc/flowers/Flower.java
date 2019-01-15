@@ -2,8 +2,8 @@ package com.example.wengzc.flowers;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.view.View;
-import android.view.animation.LinearInterpolator;
+import android.os.Handler;
+import android.util.Log;
 import android.view.animation.OvershootInterpolator;
 
 import java.util.Timer;
@@ -16,18 +16,18 @@ public class Flower implements Render{
     private EyesRender eyesRender;
     private MouthRender mouthRender;
     private FlowerBaseInfo baseInfo;
-    private View holderView;
+    private ViewHolder viewHolder;
+    private long id;
 
     //初始化显示动画时间
     private static final int PRESENT_ANIMATION_DURATION = 500;
-    private boolean inPresentAnimation;
-    private FlowerBaseInfo rawBaseInfo;
+    private boolean initedPresentAnimation;
+    private FlowerBaseInfo baseInfoBackup;
     private long animaStartTime;
     private long animaEndTime;
     private Timer animaTimer;
     private OvershootInterpolator overshootInterpolator;
-    private LinearInterpolator linearInterpolator;
-
+    private Handler handler;
 
     private Flower (Builder builder){
         this.petalRender = builder.petalRender;
@@ -35,44 +35,68 @@ public class Flower implements Render{
         this.eyesRender = builder.eyesRender;
         this.mouthRender = builder.mouthRender;
         this.baseInfo = builder.baseInfo;
-        this.inPresentAnimation = false;
+        this.initedPresentAnimation = false;
         this.overshootInterpolator = new OvershootInterpolator();
-        this.linearInterpolator = new LinearInterpolator();
-        this.holderView = builder.holderView;
+        this.viewHolder = builder.viewHolder;
+        handler = new Handler();
+        id = System.currentTimeMillis();
 
         startPresentAnimation();
+    }
+
+    public boolean initedPresentAnimation (){
+        return initedPresentAnimation;
     }
 
     private void startPresentAnimation (){
         animaStartTime = System.currentTimeMillis();
         animaEndTime = animaStartTime + PRESENT_ANIMATION_DURATION;
-        rawBaseInfo = new Builder.BaseInfo(baseInfo.getCenterX(), baseInfo.getCenterY(), baseInfo.getBaseR());
+        baseInfoBackup = new Builder.BaseInfo(baseInfo.getCenterX(), baseInfo.getCenterY(), baseInfo.getBaseR());
+        ((Builder.BaseInfo)baseInfo).setR(0);
 
         animaTimer = new Timer();
         animaTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                long now = System.currentTimeMillis();
-                if (now >= animaEndTime){
-                    finishPresentAnimation();
-                }else{
-                    Builder.BaseInfo bInfo = (Builder.BaseInfo) baseInfo;
-                    double nr = rawBaseInfo.getBaseR() * overshootInterpolator.getInterpolation( (now - animaStartTime) * 1.0f /PRESENT_ANIMATION_DURATION);
-                    bInfo.setR(nr);
-                    holderView.postInvalidate();
-                }
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        long now = System.currentTimeMillis();
+                        if (now >= animaEndTime){
+                            finishPresentAnimation();
+                        }else{
+                            Builder.BaseInfo bInfo = (Builder.BaseInfo) baseInfo;
+                            double nr = baseInfoBackup.getBaseR() * overshootInterpolator.getInterpolation( (now - animaStartTime) * 1.0f /PRESENT_ANIMATION_DURATION);
+                            bInfo.setR(nr);
+                            if (viewHolder != null){
+                                viewHolder.postInvalidate();
+                            }
+                        }
+                    }
+                });
+
             }
         }, PRESENT_ANIMATION_DURATION/20, PRESENT_ANIMATION_DURATION/20);
 
     }
 
     private void finishPresentAnimation (){
-        animaTimer.cancel();
-        animaTimer = null;
-        baseInfo = rawBaseInfo;
-        rawBaseInfo = null;
-    }
+        if (initedPresentAnimation){
+            return;
+        }
 
+        if (animaTimer != null){
+            animaTimer.cancel();
+            animaTimer = null;
+        }
+        ((Builder.BaseInfo)baseInfo).setR(baseInfoBackup.getBaseR());
+        baseInfoBackup = null;
+        initedPresentAnimation = true;
+        if (viewHolder != null){
+            viewHolder.postInvalidate();
+        }
+    }
 
     public static class Builder {
         private PetalRender petalRender;
@@ -80,14 +104,14 @@ public class Flower implements Render{
         private EyesRender eyesRender;
         private MouthRender mouthRender;
         private FlowerBaseInfo baseInfo;
-        private View holderView;
+        private ViewHolder viewHolder;
 
         public Flower build (){
             return new Flower(this);
         }
 
-        public Builder setHolderView (View holderView){
-            this.holderView = holderView;
+        public Builder setHolderView (ViewHolder viewHolder){
+            this.viewHolder = viewHolder;
             return this;
         }
 

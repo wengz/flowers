@@ -28,6 +28,7 @@ public class ColorPool {
         colors.add( ContextCompat.getColor(context, R.color.flower_color_FF89B7));
         colors.add( ContextCompat.getColor(context, R.color.flower_color_6F4FB8));
         colors.add( ContextCompat.getColor(context, R.color.flower_color_14150A));
+        colors.add( ContextCompat.getColor(context, R.color.flower_color_ADAEB3));
     }
 
     public static int randomColor (){

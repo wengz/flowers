@@ -9,19 +9,12 @@ public class FlowerFactory {
 
     private static Random random;
     private static final double R_LIMIT = 200;
-    static private int xLimit;
-    static private int yLimit;
 
     static {
         random = new Random();
     }
 
-    public static void initLimit (int argXLimit, int argYLimit){
-        xLimit = argXLimit;
-        yLimit = argYLimit;
-    }
-
-    public static Flower makeFlower (float cX, float cY, View holderView){
+    public static Flower makeFlower (float cX, float cY, ViewHolder viewHolder){
         double r = 0;
         double centerX = cX;
         double centerY = cY;
@@ -41,9 +34,9 @@ public class FlowerFactory {
         }
 
         Flower flower = new Flower.Builder(centerX, centerY, r)
-                .setHolderView(holderView)
+                .setHolderView(viewHolder)
                 .setPetalRender(PetalRenderFactory.getRender(PetalRender.Type.COLOR_LOOP, new PetalRenderFactory.ColorLoopPetalRender.ConstrcutArgument(petalColor)))
-                .setFaceRender(FaceRenderFactory.getRender(FaceRender.Type.COLOR, new FaceRenderFactory.ColorFaceRender.ConstructArgument(ColorPool.randomColor())))
+                .setFaceRender(FaceRenderFactory.getRender(FaceRender.Type.COLOR, new FaceRenderFactory.ColorFaceRender.ConstructArgument(ColorPool.randomFaceColor())))
                 .setEyesRender(EyesRenderFactory.getRener(EyesRender.Type.COLOR, new EyesRenderFactory.ColorEyesRender.ConstructArgument(ColorPool.randomColor(), ColorPool.randomColor())))
                 .setMouthRender(MouthRenderFactory.getRender(MouthRender.Type.COLOR, new MouthRenderFactory.ColorMouthRender.ConstrcutArgument(ColorPool.randomColor())))
                 .build();
