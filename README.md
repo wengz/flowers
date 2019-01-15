@@ -1,4 +1,3 @@
-# Flowers
 
 <img src="https://github.com/wengz/flowers/blob/master/flower_logo.png" width="100" height="100" alt="太阳花logo"/>
 
