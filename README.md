@@ -5,9 +5,9 @@
 
 ## 我的杯子
 
-<img src="https://github.com/wengz/flowers/blob/master/my_cup.jpg" width="1000" height="500" alt="我的太阳花马克杯"/>
+<img src="https://github.com/wengz/flowers/blob/master/flower_cup.jpg" width="540" height="960" alt="我的太阳花马克杯"/>
 
 ## 动态壁纸
 
-<img src="https://github.com/wengz/flowers/blob/master/flower_show.gif" width="540" height="960" alt="我的太阳花马克杯"/>
+<img src="https://github.com/wengz/flowers/blob/master/flower_show.gif" width="540" height="960" alt="太阳花壁纸"/>
 
